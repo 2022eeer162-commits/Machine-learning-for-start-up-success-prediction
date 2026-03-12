@@ -1,0 +1,21 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Separate target variable y from features X
+y = df_startup_data['is_successful']
+X = df_startup_data.drop(columns=['is_successful'])
+
+# Identify numerical columns for scaling
+# Exclude boolean columns that resulted from one-hot encoding as they are already in a suitable format
+numerical_features = X.select_dtypes(include=['float64', 'int64']).columns
+
+# Initialize StandardScaler
+scaler = StandardScaler()
+
+# Fit and transform the numerical features
+X[numerical_features] = scaler.fit_transform(X[numerical_features])
+
+print("Shape of feature matrix X:", X.shape)
+print("Shape of target vector y:", y.shape)
+print("First 5 rows of X after scaling numerical features:")
+print(X.head())
