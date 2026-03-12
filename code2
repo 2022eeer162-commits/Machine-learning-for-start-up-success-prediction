@@ -1,0 +1,23 @@
+for col in ['age_first_milestone_year', 'age_last_milestone_year']:
+    if df_startup_data[col].isnull().any():
+        median_val = df_startup_data[col].median()
+        df_startup_data[col].fillna(median_val, inplace=True)
+        print(f"Filled missing values in '{col}' with median: {median_val}")
+
+# Convert 'zip_code' to numeric, coercing errors, and then fill any NaNs with a placeholder if needed
+# First, check if there are any non-numeric values that would prevent direct conversion to int
+original_zip_code_dtype = df_startup_data['zip_code'].dtype
+df_startup_data['zip_code'] = pd.to_numeric(df_startup_data['zip_code'], errors='coerce')
+
+# Check if any NaNs were introduced by coercion
+nas_in_zip_code = df_startup_data['zip_code'].isnull().sum()
+
+if nas_in_zip_code > 0:
+    print(f"Found {nas_in_zip_code} non-numeric values in 'zip_code' after coercion. Imputing with 0.")
+    df_startup_data['zip_code'].fillna(0, inplace=True) # Impute with 0 or a more appropriate placeholder
+
+# Convert to integer type, if possible and if all values are now valid integers
+df_startup_data['zip_code'] = df_startup_data['zip_code'].astype(int)
+
+print("\nInfo of df_startup_data after handling missing values and zip_code conversion:")
+df_startup_data.info()
